@@ -1008,7 +1008,7 @@ func (al *AgentLoop) forceCompression(agent *AgentInstance, sessionKey string) {
 		droppedCount,
 	)
 	enhancedSystemPrompt := history[0]
-	enhancedSystemPrompt.Content = enhancedSystemPrompt.Content + compressionNote
+	enhancedSystemPrompt.Content += compressionNote
 	newHistory = append(newHistory, enhancedSystemPrompt)
 
 	newHistory = append(newHistory, keptConversation...)

@@ -417,7 +417,8 @@ func NewWebSearchTool(opts WebSearchToolOptions) (*WebSearchTool, error) {
 	maxResults := 5
 
 	// Priority: Perplexity > Brave > Tavily > DuckDuckGo
-	if opts.PerplexityEnabled && opts.PerplexityAPIKey != "" {
+	switch {
+	case opts.PerplexityEnabled && opts.PerplexityAPIKey != "":
 		client, err := createHTTPClient(opts.Proxy, perplexityTimeout)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create HTTP client for Perplexity: %w", err)
@@ -426,7 +427,7 @@ func NewWebSearchTool(opts WebSearchToolOptions) (*WebSearchTool, error) {
 		if opts.PerplexityMaxResults > 0 {
 			maxResults = opts.PerplexityMaxResults
 		}
-	} else if opts.BraveEnabled && opts.BraveAPIKey != "" {
+	case opts.BraveEnabled && opts.BraveAPIKey != "":
 		client, err := createHTTPClient(opts.Proxy, searchTimeout)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create HTTP client for Brave: %w", err)
@@ -435,7 +436,7 @@ func NewWebSearchTool(opts WebSearchToolOptions) (*WebSearchTool, error) {
 		if opts.BraveMaxResults > 0 {
 			maxResults = opts.BraveMaxResults
 		}
-	} else if opts.TavilyEnabled && opts.TavilyAPIKey != "" {
+	case opts.TavilyEnabled && opts.TavilyAPIKey != "":
 		client, err := createHTTPClient(opts.Proxy, searchTimeout)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create HTTP client for Tavily: %w", err)
@@ -449,7 +450,7 @@ func NewWebSearchTool(opts WebSearchToolOptions) (*WebSearchTool, error) {
 		if opts.TavilyMaxResults > 0 {
 			maxResults = opts.TavilyMaxResults
 		}
-	} else if opts.DuckDuckGoEnabled {
+	case opts.DuckDuckGoEnabled:
 		client, err := createHTTPClient(opts.Proxy, searchTimeout)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create HTTP client for DuckDuckGo: %w", err)
@@ -458,7 +459,7 @@ func NewWebSearchTool(opts WebSearchToolOptions) (*WebSearchTool, error) {
 		if opts.DuckDuckGoMaxResults > 0 {
 			maxResults = opts.DuckDuckGoMaxResults
 		}
-	} else {
+	default:
 		return nil, nil
 	}
 
@@ -637,7 +638,8 @@ func (t *WebFetchTool) Execute(ctx context.Context, args map[string]any) *ToolRe
 
 	var text, extractor string
 
-	if strings.Contains(contentType, "application/json") {
+	switch {
+	case strings.Contains(contentType, "application/json"):
 		var jsonData any
 		if err := json.Unmarshal(body, &jsonData); err == nil {
 			formatted, _ := json.MarshalIndent(jsonData, "", "  ")
@@ -647,11 +649,11 @@ func (t *WebFetchTool) Execute(ctx context.Context, args map[string]any) *ToolRe
 			text = string(body)
 			extractor = "raw"
 		}
-	} else if strings.Contains(contentType, "text/html") || len(body) > 0 &&
-		(strings.HasPrefix(string(body), "<!DOCTYPE") || strings.HasPrefix(strings.ToLower(string(body)), "<html")) {
+	case strings.Contains(contentType, "text/html") || len(body) > 0 &&
+		(strings.HasPrefix(string(body), "<!DOCTYPE") || strings.HasPrefix(strings.ToLower(string(body)), "<html")):
 		text = t.extractText(string(body))
 		extractor = "text"
-	} else {
+	default:
 		text = string(body)
 		extractor = "raw"
 	}

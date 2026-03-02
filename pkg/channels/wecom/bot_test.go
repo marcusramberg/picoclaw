@@ -41,9 +41,9 @@ func encryptTestMessage(message, aesKey string) (string, error) {
 	}
 
 	// Prepare message: random(16) + msg_len(4) + msg + receiveid
-	random := make([]byte, 0, 16)
+	plainText := make([]byte, 0, 16)
 	for i := range 16 {
-		random = append(random, byte(i))
+		plainText = append(plainText, byte(i))
 	}
 
 	msgBytes := []byte(message)
@@ -53,7 +53,7 @@ func encryptTestMessage(message, aesKey string) (string, error) {
 	lenBytes := make([]byte, 4)
 	binary.BigEndian.PutUint32(lenBytes, msgLen)
 
-	plainText := append(random, lenBytes...)
+	plainText = append(plainText, lenBytes...)
 	plainText = append(plainText, msgBytes...)
 	plainText = append(plainText, receiveID...)
 

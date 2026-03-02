@@ -50,7 +50,7 @@ func (m *Menu) applyItems(items []MenuItem) {
 	for row, item := range items {
 		label := item.Label
 		if item.Disabled && label != "" {
-			label = label + " (disabled)"
+			label += " (disabled)"
 		}
 		left := tview.NewTableCell(label)
 		right := tview.NewTableCell(item.Description).SetAlign(tview.AlignRight)

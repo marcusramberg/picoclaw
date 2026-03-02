@@ -117,10 +117,8 @@ func TestSingleSystemMessage(t *testing.T) {
 				if !strings.Contains(sys, tt.summary[:20]) {
 					t.Error("summary content not found in system message")
 				}
-			} else {
-				if strings.Contains(sys, "CONTEXT_SUMMARY:") {
-					t.Error("CONTEXT_SUMMARY should not appear without summary")
-				}
+			} else if strings.Contains(sys, "CONTEXT_SUMMARY:") {
+				t.Error("CONTEXT_SUMMARY should not appear without summary")
 			}
 		})
 	}

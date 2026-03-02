@@ -105,12 +105,11 @@ func (s *appState) mainMenu() tview.Primitive {
 	menu := NewMenu("Config Menu", nil)
 	refreshMainMenu(menu, s)
 	menu.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		switch event.Key() {
-		case tcell.KeyEsc:
+		switch {
+		case event.Key() == tcell.KeyEsc:
 			s.requestExit()
 			return nil
-		}
-		if event.Rune() == 'q' {
+		case event.Rune() == 'q':
 			s.requestExit()
 			return nil
 		}

@@ -147,12 +147,12 @@ func editFile(sysFs fileSystem, path, oldText, newText string) error {
 
 // appendFile reads the existing content (if any) via sysFs, appends new content, and writes back.
 func appendFile(sysFs fileSystem, path, appendContent string) error {
-	content, err := sysFs.ReadFile(path)
+	newContent, err := sysFs.ReadFile(path)
 	if err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return err
 	}
 
-	newContent := append(content, []byte(appendContent)...)
+	newContent = append(newContent, []byte(appendContent)...)
 	return sysFs.WriteFile(path, newContent)
 }
 
